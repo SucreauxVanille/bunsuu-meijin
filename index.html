@@ -2,22 +2,36 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>分数の掛け算トレーニング</title>
+  <title>分数名人君</title>
   <style>
-    .fraction { display: inline-block; text-align: center; margin: 0 10px; }
-    .numerator { border-bottom: 1px solid black; }
-    .operator { font-weight: bold; margin: 0 5px; }
-    button { margin-right: 10px; }
+    .fraction {
+      display: inline-block;
+      text-align: center;
+      vertical-align: middle;
+      margin: 0 10px;
+    }
+    .numerator {
+      border-bottom: 1px solid black;
+    }
+    .operator {
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 24px;
+      margin: 0 5px;
+    }
+    button {
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
-  <h1>分数の掛け算トレーニング</h1>
-  <div id="problem"></div>
+  <h1>分数名人君</h1>
+  <div id="problem" style="font-size: 24px;"></div>
   <div style="margin-top: 10px;">
     <button onclick="showAnswer()">答えを見る</button>
     <button onclick="nextProblem()">次の問題</button>
   </div>
-  <div id="answer" style="margin-top: 10px;"></div>
+  <div id="answer" style="margin-top: 10px; font-size: 20px;"></div>
 
   <script>
     function gcd(a, b) {
@@ -33,18 +47,20 @@
       let a, b, e, f, m, n, c, d;
 
       do {
+        // a/b：既約でb > 1
         do {
           a = Math.floor(Math.random() * 9) + 1;
-          b = Math.floor(Math.random() * 9) + 1;
+          b = Math.floor(Math.random() * 14) + 2; // b = 2〜9
         } while (gcd(a, b) !== 1);
 
+        // e/f：既約でf > 1
         do {
           e = Math.floor(Math.random() * 9) + 1;
-          f = Math.floor(Math.random() * 9) + 1;
+          f = Math.floor(Math.random() * 14) + 2; // f = 2〜9
         } while (gcd(e, f) !== 1);
 
-        m = Math.floor(Math.random() * 4) + 1;
-        n = Math.floor(Math.random() * 4) + 1;
+        m = Math.floor(Math.random() * 5) + 1;
+        n = Math.floor(Math.random() * 5) + 1;
 
         c = m * b * f;
         d = n * a * e;
@@ -63,39 +79,22 @@
       const answerDiv = document.getElementById("answer");
       answerDiv.textContent = ""; // 答えをリセット
 
-      problemDiv.innerHTML = `
+      const makeFractionHTML = ([num, den]) => `
         <span class="fraction">
-          <div class="numerator">${f1[0]}</div>
-          <div>${f1[1]}</div>
-        </span>
-        <span class="operator">×</span>
-        <span class="fraction">
-          <div class="numerator">${f2[0]}</div>
-          <div>${f2[1]}</div>
-        </span>
-        <span class="operator">×</span>
-        <span class="fraction">
-          <div class="numerator">${f3[0]}</div>
-          <div>${f3[1]}</div>
+          <div class="numerator">${num}</div>
+          <div>${den}</div>
         </span>
       `;
+
+      problemDiv.innerHTML =
+        makeFractionHTML(f1) +
+        `<span class="operator">×</span>` +
+        makeFractionHTML(f2) +
+        `<span class="operator">×</span>` +
+        makeFractionHTML(f3);
     }
 
     function showAnswer() {
       const [f1, f2, f3] = currentProblem.fractions;
       const num = f1[0] * f2[0] * f3[0];
-      const den = f1[1] * f2[1] * f3[1];
-      const [rNum, rDen] = reduceFraction(num, den);
-      document.getElementById("answer").textContent = `答え：${rNum}/${rDen}`;
-    }
-
-    function nextProblem() {
-      currentProblem = generateProblem();
-      displayProblem();
-    }
-
-    // 初期表示
-    nextProblem();
-  </script>
-</body>
-</html>
+      const den = f1[1] * f2[1]*
