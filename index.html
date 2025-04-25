@@ -43,33 +43,40 @@
       return [numerator / g, denominator / g];
     }
 
-    function generateProblem() {
-      let a, b, e, f, m, n, c, d;
+function generateProblem() {
+  let a, b, e, f, m, n, c, d;
 
-      do {
-        // a/b：既約でb > 1
-        do {
-          a = Math.floor(Math.random() * 9) + 1;
-          b = Math.floor(Math.random() * 8) + 2; // b = 2〜9
-        } while (gcd(a, b) !== 1);
+  do {
+    // a/b：既約で b ∈ [2,20]
+    do {
+      a = Math.floor(Math.random() * 20) + 1;      // a ∈ [1,20]
+      b = Math.floor(Math.random() * 19) + 2;      // b ∈ [2,20]
+    } while (gcd(a, b) !== 1);
 
-        // e/f：既約でf > 1
-        do {
-          e = Math.floor(Math.random() * 9) + 1;
-          f = Math.floor(Math.random() * 8) + 2; // f = 2〜9
-        } while (gcd(e, f) !== 1);
+    // e/f：既約で f ∈ [2,20]
+    do {
+      e = Math.floor(Math.random() * 20) + 1;      // e ∈ [1,20]
+      f = Math.floor(Math.random() * 19) + 2;      // f ∈ [2,20]
+    } while (gcd(e, f) !== 1);
 
-        m = Math.floor(Math.random() * 4) + 1;
-        n = Math.floor(Math.random() * 4) + 1;
+    // m, n を調整し、m*b*f と n*a*e が互いに素になるまで繰り返す
+    let tries = 0;
+    do {
+      m = Math.floor(Math.random() * 10) + 1;
+      n = Math.floor(Math.random() * 10) + 1;
+      c = m * b * f;
+      d = n * a * e;
+      tries++;
+      // 無限ループ防止（10回で諦め）
+      if (tries > 10) break;
+    } while (gcd(c, d) !== 1);
 
-        c = m * b * f;
-        d = n * a * e;
-      } while (c > 200 || d > 200);
+  } while (c > 200 || d > 200 || gcd(c, d) !== 1);
 
-      return {
-        fractions: [[a, b], [c, d], [e, f]]
-      };
-    }
+  return {
+    fractions: [[a, b], [c, d], [e, f]]
+  };
+}
 
     let currentProblem;
 
