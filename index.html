@@ -1,187 +1,139 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>分数名人君</title>
   <style>
     body {
       font-family: sans-serif;
       text-align: center;
-      margin: 2em;
-    }
-    .fraction-container, .answer-container, .result-area {
-      text-align: center;
-      margin: 1em auto;
-      font-size: 1.5em;
+      padding: 20px;
     }
     .fraction {
       display: inline-block;
       text-align: center;
-      margin: 0 0.3em;
+      vertical-align: middle;
+      margin: 0 5px;
     }
-    .fraction .numerator {
-      display: block;
+    .fraction .top {
+      border-bottom: 1px solid #000;
+      padding: 2px 4px;
     }
-    .fraction .denominator {
-      display: block;
-      border-top: 1px solid black;
+    .fraction .bottom {
+      padding: 2px 4px;
     }
-    .fraction-input input {
-      width: 3em;
-      font-size: 1em;
-      text-align: center;
-      border: 1px solid #aaa;
-      margin: 0.2em;
+    .centered {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .fraction-bar {
+      border-top: 1px solid #000;
+      width: 30px;
+      margin: 0 auto;
     }
     button {
-      font-size: 1em;
-      margin: 0.5em;
-      padding: 0.5em 1em;
+      margin: 10px;
+      padding: 10px 15px;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
   <h1>分数名人君</h1>
+  <div id="problem" class="centered"></div>
 
-  <div id="problem" class="fraction-container"></div>
-
-  <div id="answer-area" class="answer-container">
-    <div class="fraction-input">
-      <input id="user-numerator" type="number" placeholder="?" />
-      <hr />
-      <input id="user-denominator" type="number" placeholder="?" />
-    </div>
-    <button onclick="checkAnswer()">答えを見る</button>
+  <h3>答えを入力：</h3>
+  <div class="centered">
+    <input type="number" id="userNumerator" placeholder="分子" style="width: 50px;" />
+    <div class="fraction-bar"></div>
+    <input type="number" id="userDenominator" placeholder="分母" style="width: 50px;" />
   </div>
 
-  <div id="result" class="result-area"></div>
-  <div id="retry-buttons" style="display:none;">
-    <button onclick="retryProblem()">再挑戦する</button>
-    <button onclick="showCorrectAnswer()">答えを見る</button>
+  <div class="centered">
+    <button onclick="checkAnswer()">答え合わせ</button>
+    <div id="feedback"></div>
+    <div id="buttons"></div>
   </div>
-
-  <button onclick="showNewProblem()">次の問題</button>
 
   <script>
-    let currentProblem;
-    let showAnswer = false;
+    let a, b, c, d, e, f, m, n;
+    let correctNumerator, correctDenominator;
 
-    function gcd(a, b) {
-      return b === 0 ? a : gcd(b, a % b);
+    function gcd(x, y) {
+      while (y) [x, y] = [y, x % y];
+      return x;
     }
 
     function generateProblem() {
-      let a, b, e, f, m, n, c, d;
-
       do {
-        do {
-          a = Math.floor(Math.random() * 20) + 1;
-          b = Math.floor(Math.random() * 19) + 2;
-        } while (gcd(a, b) !== 1);
-
-        do {
-          e = Math.floor(Math.random() * 20) + 1;
-          f = Math.floor(Math.random() * 19) + 2;
-        } while (gcd(e, f) !== 1);
-
-        let tries = 0;
+        a = Math.floor(Math.random() * 20) + 1;
+        b = Math.floor(Math.random() * 19) + 2; // b > 1
+        e = Math.floor(Math.random() * 20) + 1;
+        f = Math.floor(Math.random() * 19) + 2; // f > 1
         do {
           m = Math.floor(Math.random() * 10) + 1;
-          n = Math.floor(Math.random() * 10) + 1;
-          c = m * b * f;
-          d = n * a * e;
-          tries++;
-          if (tries > 10) break;
-        } while (gcd(c, d) !== 1);
+          n = Math.floor(Math.random() * 9) + 2; // n > 1
+        } while (gcd(m * b * f, n * a * e) !== 1);
+        c = m * b * f;
+        d = n * a * e;
+      } while (c > 200 || d > 200);
 
-      } while (c > 200 || d > 200 || gcd(c, d) !== 1);
+      const problemDiv = document.getElementById("problem");
+      problemDiv.innerHTML = `
+        <div class="fraction"><div class="top">${a}</div><div class="bottom">${b}</div></div>
+        <span style="vertical-align: middle; font-size: 20px;">×</span>
+        <div class="fraction"><div class="top">${c}</div><div class="bottom">${d}</div></div>
+        <span style="vertical-align: middle; font-size: 20px;">×</span>
+        <div class="fraction"><div class="top">${e}</div><div class="bottom">${f}</div></div>
+      `;
 
-      return {
-        fractions: [[a, b], [c, d], [e, f]]
-      };
-    }
+      let num = a * c * e;
+      let den = b * d * f;
+      let g = gcd(num, den);
+      correctNumerator = num / g;
+      correctDenominator = den / g;
 
-    function displayProblem(problem) {
-      const container = document.getElementById("problem");
-      container.innerHTML = "";
-
-      const parts = problem.fractions.map(([num, den]) => `
-        <span class="fraction">
-          <span class="numerator">${num}</span>
-          <span class="denominator">${den}</span>
-        </span>`);
-
-      container.innerHTML = parts.join("<span style='font-size: 1.2em;'>×</span>");
+      document.getElementById("feedback").innerHTML = "";
+      document.getElementById("buttons").innerHTML = "";
+      document.getElementById("userNumerator").value = "";
+      document.getElementById("userDenominator").value = "";
     }
 
     function checkAnswer() {
-      const userNum = parseInt(document.getElementById("user-numerator").value);
-      const userDen = parseInt(document.getElementById("user-denominator").value);
+      const userNum = parseInt(document.getElementById("userNumerator").value);
+      const userDen = parseInt(document.getElementById("userDenominator").value);
 
-      if (!userNum || !userDen) {
-        document.getElementById("result").innerHTML = "⚠️ 分子と分母を入力してください。";
-        return;
-      }
-
-      const [a, b] = currentProblem.fractions[0];
-      const [c, d] = currentProblem.fractions[1];
-      const [e, f] = currentProblem.fractions[2];
-
-      let num = a * c * e;
-      let den = b * d * f;
-      const divisor = gcd(num, den);
-      const correctNum = num / divisor;
-      const correctDen = den / divisor;
-
-      const isCorrect = (userNum === correctNum && userDen === correctDen);
-
-      if (isCorrect) {
-        document.getElementById("result").innerHTML = `⭕ 正解！<br>
-          <div class="fraction">
-            <span class="numerator">${correctNum}</span>
-            <span class="denominator">${correctDen}</span>
-          </div>`;
-        document.getElementById("retry-buttons").style.display = "none";
+      if (userNum === correctNumerator && userDen === correctDenominator) {
+        document.getElementById("feedback").innerHTML = "<p style='color:green;'>正解です！</p>";
+        document.getElementById("buttons").innerHTML = '<button onclick="generateProblem()">次の問題</button>';
       } else {
-        document.getElementById("result").innerHTML = "❌ 不正解…";
-        document.getElementById("retry-buttons").style.display = "block";
-        showAnswer = false;
+        document.getElementById("feedback").innerHTML = "<p style='color:red;'>不正解です。</p>";
+        document.getElementById("buttons").innerHTML = `
+          <button onclick="retryAnswer()">再挑戦する</button>
+          <button onclick="showAnswer()">答えを見る</button>
+        `;
       }
     }
 
-    function showCorrectAnswer() {
-      const [a, b] = currentProblem.fractions[0];
-      const [c, d] = currentProblem.fractions[1];
-      const [e, f] = currentProblem.fractions[2];
-
-      let num = a * c * e;
-      let den = b * d * f;
-      const divisor = gcd(num, den);
-      const correctNum = num / divisor;
-      const correctDen = den / divisor;
-
-      document.getElementById("result").innerHTML = `正解：<br>
-        <div class="fraction">
-          <span class="numerator">${correctNum}</span>
-          <span class="denominator">${correctDen}</span>
-        </div>`;
-      document.getElementById("retry-buttons").style.display = "none";
+    function retryAnswer() {
+      document.getElementById("feedback").innerHTML = "";
+      document.getElementById("buttons").innerHTML = "";
+      document.getElementById("userNumerator").value = "";
+      document.getElementById("userDenominator").value = "";
     }
 
-    function retryProblem() {
-      document.getElementById("user-numerator").value = "";
-      document.getElementById("user-denominator").value = "";
-      document.getElementById("result").innerHTML = "";
-      document.getElementById("retry-buttons").style.display = "none";
+    function showAnswer() {
+      document.getElementById("feedback").innerHTML = `
+        <p>正解：</p>
+        <div class="fraction"><div class="top">${correctNumerator}</div><div class="bottom">${correctDenominator}</div></div>
+      `;
+      document.getElementById("buttons").innerHTML = '<button onclick="generateProblem()">次の問題</button>';
     }
 
-    function showNewProblem() {
-      currentProblem = generateProblem();
-      displayProblem(currentProblem);
-      retryProblem();
-    }
-
-    showNewProblem();
+    generateProblem();
   </script>
 </body>
 </html>
