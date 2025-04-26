@@ -31,25 +31,43 @@
     }
     .fraction-bar {
       border-top: 1px solid #000;
-      width: 20px;
-      margin: 0 auto;
+      width: 30px;
+      margin: 2px auto;
+    }
+    input[type="number"] {
+      font-size: 28px;
+      width: 80px;
+      text-align: center;
+      margin: 6px 0;
     }
     button {
       margin: 10px;
-      padding: 10px 15px;
-      font-size: 16px;
+      padding: 18px 24px;
+      font-size: 22px;
+      min-width: 200px;
+    }
+    .problem-line {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: nowrap;
+      flex-direction: row;
+      gap: 10px;
+      margin: 20px 0;
+      flex-shrink: 0;
+      white-space: nowrap;
     }
   </style>
 </head>
 <body>
   <h1>分数名人君</h1>
-  <div id="problem" class="centered"></div>
+  <div id="problem" class="problem-line"></div>
 
   <h3>答えを入力：</h3>
   <div class="centered">
-    <input type="number" id="userNumerator" placeholder="分子" style="width: 50px;" />
+    <input type="number" id="userNumerator" placeholder="分子" />
     <div class="fraction-bar"></div>
-    <input type="number" id="userDenominator" placeholder="分母" style="width: 50px;" />
+    <input type="number" id="userDenominator" placeholder="分母" />
   </div>
 
   <div class="centered">
@@ -90,19 +108,24 @@
         }
       }
 
+      const problemDiv = document.getElementById("problem");
+      const feedback = document.getElementById("feedback");
+      const buttons = document.getElementById("buttons");
+      const userNumerator = document.getElementById("userNumerator");
+      const userDenominator = document.getElementById("userDenominator");
+
       if (!valid) {
-        document.getElementById("problem").innerHTML = "<p style='color:red;'>問題の生成に失敗しました。ページを再読み込みしてください。</p>";
-        document.getElementById("feedback").innerHTML = "";
-        document.getElementById("buttons").innerHTML = "";
+        problemDiv.innerHTML = "<p style='color:red;'>問題の生成に失敗しました。ページを再読み込みしてください。</p>";
+        feedback.innerHTML = "";
+        buttons.innerHTML = "";
         return;
       }
 
-      const problemDiv = document.getElementById("problem");
       problemDiv.innerHTML = `
         <div class="fraction"><div class="top">${a}</div><div class="bottom">${b}</div></div>
-        <span style="vertical-align: middle; font-size: 20px;">×</span>
+        <span style="vertical-align: middle; font-size: 24px;">×</span>
         <div class="fraction"><div class="top">${c}</div><div class="bottom">${d}</div></div>
-        <span style="vertical-align: middle; font-size: 20px;">×</span>
+        <span style="vertical-align: middle; font-size: 24px;">×</span>
         <div class="fraction"><div class="top">${e}</div><div class="bottom">${f}</div></div>
       `;
 
@@ -112,10 +135,10 @@
       correctNumerator = num / g;
       correctDenominator = den / g;
 
-      document.getElementById("feedback").innerHTML = "";
-      document.getElementById("buttons").innerHTML = "";
-      document.getElementById("userNumerator").value = "";
-      document.getElementById("userDenominator").value = "";
+      feedback.innerHTML = "";
+      buttons.innerHTML = "";
+      userNumerator.value = "";
+      userDenominator.value = "";
     }
 
     function checkAnswer() {
