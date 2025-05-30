@@ -74,6 +74,7 @@
   <div class="centered">
     <button onclick="checkAnswer()">答え合わせ</button>
     <div id="feedback"></div>
+    <div id="streakDisplay" style="margin-top: 10px; font-weight: bold;"></div>
     <div id="buttons"></div>
   </div>
 
@@ -143,13 +144,22 @@
       userDenominator.value = "";
     }
 
+    function updateStreakDisplay() {
+      const streakDiv = document.getElementById("streakDisplay");
+      if (streak > 0) {
+        streakDiv.innerText = `${streak}問連続正解中！`;
+      } else {
+        streakDiv.innerText = "";
+      }
+    }
+
     function checkAnswer() {
       const userNum = parseInt(document.getElementById("userNumerator").value);
       const userDen = parseInt(document.getElementById("userDenominator").value);
 
       if (userNum === correctNumerator && userDen === correctDenominator) {
         streak++;
-        document.getElementById("feedback").innerHTML = `<p style='color:green;'>正解！${streak}問連続正解中！</p>`;
+        document.getElementById("feedback").innerHTML = `<p style='color:green;'>正解！</p>`;
         document.getElementById("buttons").innerHTML = '<button onclick="generateProblem()">次の問題</button>';
       } else {
         streak = 0;
@@ -159,6 +169,7 @@
           <button onclick="showAnswer()">答えを見る</button>
         `;
       }
+      updateStreakDisplay();
     }
 
     function retryAnswer() {
@@ -177,6 +188,7 @@
     }
 
     generateProblem();
+    updateStreakDisplay();
   </script>
 </body>
 </html>
