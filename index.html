@@ -10,21 +10,20 @@
       text-align: center;
       padding: 20px;
     }
-.fraction {
-  display: inline-block;
-  text-align: center;
-  vertical-align: middle;
-  margin: 0 5px;
-  white-space: nowrap; /* 追加 */
-}
-.fraction .top {
-  border-bottom: 1px solid #000;
-  padding: 1px 3px; /* 調整 */
-}
-.fraction .bottom {
-  padding: 1px 3px; /* 調整 */
-}
-
+    .fraction {
+      display: inline-block;
+      text-align: center;
+      vertical-align: middle;
+      margin: 0 5px;
+      white-space: nowrap; 
+    }
+    .fraction .top {
+      border-bottom: 1px solid #000;
+      padding: 1px 3px; 
+    }
+    .fraction .bottom {
+      padding: 1px 3px; 
+    }
     .centered {
       display: flex;
       flex-direction: column;
@@ -81,6 +80,7 @@
   <script>
     let a, b, c, d, e, f, m, n;
     let correctNumerator, correctDenominator;
+    let streak = 0;
 
     function gcd(x, y) {
       while (y) [x, y] = [y, x % y];
@@ -148,10 +148,12 @@
       const userDen = parseInt(document.getElementById("userDenominator").value);
 
       if (userNum === correctNumerator && userDen === correctDenominator) {
-        document.getElementById("feedback").innerHTML = "<p style='color:green;'>正解です！</p>";
+        streak++;
+        document.getElementById("feedback").innerHTML = `<p style='color:green;'>正解！${streak}問連続正解中！</p>`;
         document.getElementById("buttons").innerHTML = '<button onclick="generateProblem()">次の問題</button>';
       } else {
-        document.getElementById("feedback").innerHTML = "<p style='color:red;'>不正解です。</p>";
+        streak = 0;
+        document.getElementById("feedback").innerHTML = `<p style='color:red;'>不正解です。</p>`;
         document.getElementById("buttons").innerHTML = `
           <button onclick="retryAnswer()">再挑戦する</button>
           <button onclick="showAnswer()">答えを見る</button>
