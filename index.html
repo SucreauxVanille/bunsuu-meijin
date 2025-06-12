@@ -53,6 +53,15 @@
       background-color: #3498db;
       color: white;
     }
+    #celebration {
+      position: absolute;
+      top: 100px;
+      left: -200px;
+      transition: left 4s ease-in-out;
+    }
+    #celebration.show {
+      left: 100vw;
+    }
     .problem-line {
       display: flex;
       justify-content: center;
@@ -83,6 +92,7 @@
     <div id="streakDisplay" style="margin-top: 10px; font-weight: bold;"></div>
     <div id="buttons"></div>
   </div>
+  <img id="celebration" src="sugoi2.png" alt="すごい！" width="150" height="150" />
 
   <script>
     let a, b, c, d, e, f, m, n;
@@ -152,8 +162,15 @@
 
     function updateStreakDisplay() {
       const streakDiv = document.getElementById("streakDisplay");
+      const celebration = document.getElementById('celebration');
       if (streak > 0) {
         streakDiv.innerText = `${streak}問連続正解中！`;
+      if (streak === 10) {
+        celebration.classList.add('show');
+        setTimeout(() => {
+            celebration.classList.remove('show');
+          }, 4000);
+        }  
       } else {
         streakDiv.innerText = "";
       }
