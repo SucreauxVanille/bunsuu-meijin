@@ -160,38 +160,30 @@
       userDenominator.value = "";
     }
 
-    function updateStreakDisplay() {
-      const streakDiv = document.getElementById("streakDisplay");
-      const celebration = document.getElementById('celebration');
+function updateStreakDisplay() {
+  const streakDiv = document.getElementById("streakDisplay");
+  const celebration = document.getElementById('celebration');
 
-      if (streak > 0) {
-        if (streak % 10 === 0) {
-          const comments = ["すごい！","いいぞ！","お見事！","すばらしい！"];
-          const comment = comments[Math.floor(Math.random() * comments.length)];
-          streakDiv.innerText = `${streak}問連続正解中！+${comment}`;
+  if (streak > 0) {
+    if (streak % 10 === 0) {
+      const comments = ["すごい！","いいぞ！","お見事！","すばらしい！"];
+      const comment = comments[Math.floor(Math.random() * comments.length)];
 
-          // 既存の演出をそのまま維持
-          celebration.classList.add('show');
-          setTimeout(() => {
-            celebration.classList.remove('show');
-          }, 4000);
-        } else {
-          streakDiv.innerText = `${streak}問連続正解中！`;
-        }
-      } else {
-        streakDiv.innerText = "";
-      }
-    }問連続正解中！`;
-      if (streak === 10) {
-        celebration.classList.add('show');
-        setTimeout(() => {
-            celebration.classList.remove('show');
-          }, 4000);
-        }  
-      } else {
-        streakDiv.innerText = "";
-      }
+      streakDiv.innerText = `${streak}問連続正解中！+${comment}`;
+
+      // ←ここが元の機能（絶対残す）
+      celebration.classList.add('show');
+      setTimeout(() => {
+        celebration.classList.remove('show');
+      }, 4000);
+
+    } else {
+      streakDiv.innerText = `${streak}問連続正解中！`;
     }
+  } else {
+    streakDiv.innerText = "";
+  }
+}
 
     function checkAnswer() {
       const userNum = parseInt(document.getElementById("userNumerator").value);
